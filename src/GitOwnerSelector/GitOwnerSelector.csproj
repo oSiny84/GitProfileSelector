@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>GitOwnerSelector</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../GitOwnerSelector.Core/GitOwnerSelector.Core.csproj" /></ItemGroup>
+</Project>

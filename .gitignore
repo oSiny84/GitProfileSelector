@@ -1,0 +1,28 @@
+**/bin/
+**/obj/
+.test-work/
+dist/
+*.user
+
+# IDE and local workspace files
+.vs/
+.idea/
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Local credentials and accidental configuration exports
+.env
+.env.*
+!.env.example
+.gitconfig
+.git-credentials
+/settings.json
+/folders.gitconfig
+/profiles/
+/backups/
+
+# OS metadata
+Thumbs.db
+Desktop.ini
+.DS_Store

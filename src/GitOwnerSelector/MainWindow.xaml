@@ -1,0 +1,70 @@
+<Window x:Class="GitOwnerSelector.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Git Owner Selector" Width="1120" Height="900" MinWidth="1040" MinHeight="850" Background="#F3F6FB" FontFamily="Malgun Gothic" FontSize="13" WindowStartupLocation="CenterScreen">
+  <Grid Margin="30" Background="#F3F6FB">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel Margin="0,0,0,24">
+      <TextBlock Text="GIT OWNER SELECTOR" Foreground="#2559DC" FontWeight="Bold" FontSize="12"/>
+      <TextBlock Text="폴더마다, 알맞은 GitHub 계정." FontSize="28" FontWeight="Bold" Foreground="#182D4D" Margin="0,8,0,6"/>
+      <TextBlock Text="회사와 개인 작업을 분리하세요. 한 번 적용하면 앱을 종료해도 Git에 설정이 유지됩니다." Foreground="#61718A"/>
+    </StackPanel>
+    <Grid Grid.Row="1" x:Name="Workspace">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="310"/><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <Border Background="White" CornerRadius="14" Padding="22">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel>
+            <TextBlock Text="01  계정 프로필" FontSize="18" FontWeight="Bold" Margin="0,0,0,14"/>
+            <ComboBox x:Name="Profiles" SelectionChanged="ProfileSelected"/>
+            <TextBlock Text="별칭"/><TextBox x:Name="ProfileLabel" ToolTip="예: 회사, 개인"/>
+            <TextBlock Text="GitHub 아이디"/><TextBox x:Name="Username" ToolTip="@ 없이 입력하세요"/>
+            <TextBlock Text="커밋 작성자 이름"/><TextBox x:Name="CommitName"/>
+            <TextBlock Text="커밋 이메일"/><TextBox x:Name="CommitEmail" ToolTip="GitHub에서 확인된 이메일 또는 noreply 주소"/>
+            <WrapPanel Margin="0,0,0,12">
+              <Button Content="프로필 저장" Click="SaveProfile" Background="#2559DC" Foreground="White"/>
+              <Button Content="새 계정" Click="NewProfile"/>
+            </WrapPanel>
+            <WrapPanel Margin="0,0,0,14"><Button Content="GitHub 로그인" Click="Login"/><Button Content="삭제" Click="DeleteProfile"/></WrapPanel>
+            <TextBlock Text="로그인 정보는 Git Credential Manager가 관리합니다. 이 앱에는 비밀번호나 토큰을 저장하지 않습니다." TextWrapping="Wrap" Foreground="#61718A" FontSize="12"/>
+            <Button Content="로그인된 계정 확인" Click="ListAccounts" Margin="0,18,0,0"/>
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+      <Grid Grid.Column="2">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="145"/></Grid.RowDefinitions>
+        <Border Background="White" CornerRadius="14" Padding="22" Margin="0,0,0,16">
+          <StackPanel>
+            <TextBlock Text="02  폴더 연결" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+            <DockPanel><Button DockPanel.Dock="Right" Content="폴더 선택" Click="Browse" Margin="10,5,0,15"/><TextBox x:Name="Folder" ToolTip="계정 기본값을 적용할 폴더"/></DockPanel>
+            <ComboBox x:Name="RuleAccount"/>
+            <CheckBox x:Name="Recursive" IsChecked="True" Content="하위 폴더의 모든 저장소에 적용" Margin="0,0,0,14"/>
+            <DockPanel>
+              <Button Content="폴더에 계정 적용" Click="ApplyRule" Background="#2559DC" Foreground="White" DockPanel.Dock="Left"/>
+              <TextBlock Text="HTTPS · github.com" Foreground="#61718A" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            </DockPanel>
+          </StackPanel>
+        </Border>
+        <Border Grid.Row="1" Background="White" CornerRadius="14" Padding="22" Margin="0,0,0,16">
+          <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="연결된 폴더" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+            <WrapPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+              <Button Content="설정 검사" Click="Inspect"/><Button Content="접근 테스트" Click="TestAccess"/><Button Content="연결 해제" Click="RemoveRule"/>
+            </WrapPanel>
+            <DataGrid x:Name="Rules" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0" Background="White" RowHeight="35" CanUserAddRows="False" SelectionChanged="RuleSelected">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="폴더" Binding="{Binding Folder}" Width="*"/>
+                <DataGridTextColumn Header="계정" Binding="{Binding Account}" Width="105"/>
+                <DataGridTextColumn Header="범위" Binding="{Binding Scope}" Width="85"/>
+              </DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+        </Border>
+        <Border Grid.Row="2" Background="#192C49" CornerRadius="14" Padding="16">
+          <TextBox x:Name="Output" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="Transparent" Foreground="#DFE9F7" BorderThickness="0" Margin="0" FontSize="12" Text="계정을 등록하고 폴더를 연결해 주세요.&#10;저장소별 설정이나 remote URL의 계정은 폴더 기본값보다 우선할 수 있습니다."/>
+        </Border>
+      </Grid>
+    </Grid>
+    <DockPanel Grid.Row="2" Margin="0,18,0,0">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"><Button x:Name="DisableButton" Content="앱 설정 전체 해제" Click="Disable"/><Button Content="설정 폴더 열기" Click="OpenData" Margin="0"/></StackPanel>
+      <TextBlock x:Name="Status" Text="환경 확인 중…" VerticalAlignment="Center" Foreground="#61718A"/>
+    </DockPanel>
+  </Grid>
+</Window>
